@@ -1,14 +1,3 @@
-# FUNCTION - COMPUTE X AND Y GEOMETRIC INTEGRALS FOR SOURCE PANEL METHOD
-# Written by: JoshTheEngineer
-# YouTube   : www.youtube.com/joshtheengineer
-# Website   : www.joshtheengineer.com
-# Started   : 01/23/19
-# Updated   : 01/23/19 - Started code in MATLAB
-#                      - Works as expected
-#           : 02/03/19 - Transferred to Python
-#                      - Works as expected
-#           : 04/28/20 - Fixed E value error handling
-#
 # PURPOSE
 # - Compute the geometric integral at point P due to source panels
 # - Source panel strengths are constant, but can change from panel to panel
