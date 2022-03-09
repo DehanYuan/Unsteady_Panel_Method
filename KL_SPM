@@ -3,13 +3,6 @@
 # - Vortex panel strengths are constant, but can change from panel to panel
 # - Geometric integral for panel-normal    : K(ij)
 # - Geometric integral for panel-tangential: L(ij)
-#
-# REFERENCES
-# - [1]: Normal Geometric Integral VPM, K(ij)
-#           Link: https://www.youtube.com/watch?v=5lmIv2CUpoc
-# - [2]: Tangential Geometric Integral VPM, L(ij)
-#           Link: https://www.youtube.com/watch?v=IxWJzwIG_gY
-#
 # INPUTS
 # - XC  : X-coordinate of control points
 # - YC  : Y-coordinate of control points
