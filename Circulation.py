@@ -1,11 +1,3 @@
-# FUNCTION - COMPUTE CIRCULATION
-# Written by: JoshTheEngineer
-# YouTube   : www.youtube.com/joshtheengineer
-# Website   : www.joshtheengineer.com
-# Started: 02/19/19
-# Updated: 02/19/19 - Transferred from MATLAB to Python
-#                   - Works as expected
-#
 # PURPOSE
 # - Compute the circulation around the defined ellipse
 #
