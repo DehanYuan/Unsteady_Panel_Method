@@ -4,9 +4,6 @@
 # - Geometric integral for X-direction: Nx(pj)
 # - Geometric integral for Y-direction: Ny(pj)
 #
-# REFERENCES
-# - [1]: Streamline Geometric Integral VPM, Nx(pj) and Ny(pj)
-#           Link: https://www.youtube.com/watch?v=TBwBnW87hso
 #
 # INPUTS
 # - XP  : X-coordinate of computation point, P
