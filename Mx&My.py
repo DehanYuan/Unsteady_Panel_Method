@@ -4,10 +4,6 @@
 # - Geometric integral for X-direction: Mx(pj)
 # - Geometric integral for Y-direction: My(pj)
 #
-# REFERENCE
-# - [1]: Streamline Geometric Integral SPM, Mx(pj) and My(pj)
-#           Link: https://www.youtube.com/watch?v=BnPZjGCatcg
-#
 # INPUTS
 # - XP  : X-coordinate of computation point, P
 # - YP  : Y-coordinate of computation point, P
