@@ -8,8 +8,8 @@ from KL_VPM import KL_VPM
 from Tit_Tin import Tit_Tin
 from Ait_Ain import Ait_Ain
 from Diqt import Diqt
-from Diqn import Diqn
-from Wihn import Wihn
+from DiqnF import DiqnF
+from WihnF import WihnF
 from Wiht import Wiht
 from MTjxMTjy import MTjxMTjy
 from MSljxMSljy import MSljxMSljy
@@ -22,7 +22,7 @@ from NTjxNTjy import NTjxNTjy
 from DThxDThy import DThxDThy
 from DTqxDTqy import DTqxDTqy
 from ATxATy import ATxATy
-from V_it import V_it
+from V_itF import V_itF
 from NSjxNSjy import NSjxNSjy
 from ASxASy import ASxASy
 from DScxDScy import DScxDScy
@@ -152,27 +152,24 @@ V_itc = np.zeros(numPan)  # source strength of airfoil (different from panel to 
 ABM = np.zeros(numPan)
 BBM = np.zeros([numPan, numPan])
 CBM = np.zeros([numPan, numPan])
-DBM = np.zeros(numPan)
-EBM = np.zeros(numPan)
-FBM = np.zeros(numPan)
-GBM = np.zeros(numPan)  # BC parameters
+  # BC parameters
 
 ACM = np.zeros(numPan)
 BCM1 = np.zeros([numPan, numPan])
 BCM = np.zeros([numPan, numPan])
 CCM = np.zeros(numPan)
-CCM1 = np.zeros([numPan, numPan])
 DCM = np.zeros(numPan)
 ECM = np.zeros(numPan)
 FCM = np.zeros(numPan)
-GCM = np.zeros(numPan)  # KC parameters
+GCM = np.zeros(numPan)
+HCM = np.zeros(numPan)  # KC parameters
 
 l = numPan * S  # compute the perimeter of airfoil
 Vs_x = np.zeros(numPan)
 Vs_y = np.zeros(numPan)
 for i in range(numPan):
-    Vs_x[i] = Vinf * np.cos(beta[i])
-    Vs_y[i] = Vinf * np.sin(beta[i])
+    Vs_x[i] = Vinf * np.cos(AoAR)
+    Vs_y[i] = Vinf * np.sin(AoAR)
 
 XW = np.zeros(M)
 YW = np.zeros(M)
@@ -214,171 +211,78 @@ XBP[0] = Xle
 
 # {
 #     All the circle code with k write in here:
-for k in range(int(Kt)):
-    # Compute normal vector angle delta_i and define the tangent vector of foil panel
-    for i in range(numPan):
-        delta_i[i] = 90 + phi[i]
-        tau_x[i] = (XB[i + 1] - XB[i]) / S[i]  # cos(panel incline angle)
-        tau_y[i] = (YB[i + 1] - YB[i]) / S[i]  # sin(panel incline angle)
+# for k in range(int(Kt)):
+# Compute normal vector angle delta_i and define the tangent vector of foil panel
+for i in range(numPan):
+    delta_i[i] = 90 + phi[i]
+    tau_x[i] = (XB[i + 1] - XB[i]) / S[i]  # cos(panel incline angle)
+    tau_y[i] = (YB[i + 1] - YB[i]) / S[i]  # sin(panel incline angle)
 
-    xT = XB[0] + 0.5 * DeltaS_T * np.cos(Theta_T)
-    yT = YB[0] + 0.5 * DeltaS_T * np.sin(Theta_T)  # Compute Trailing edge vortex location
+xT = XB[0] + 0.5 * DeltaS_T * np.cos(Theta_T)
+yT = YB[0] + 0.5 * DeltaS_T * np.sin(Theta_T)  # Compute Trailing edge vortex location
 
-    xSl = x_isl + 0.5 * DeltaS_Sl * np.cos(Theta_Sl)
-    ySl = y_isl + 0.5 * DeltaS_Sl * np.sin(Theta_Sl)  # Define latest separation vortex control point location
+xSl = x_isl + 0.5 * DeltaS_Sl * np.cos(Theta_Sl)
+ySl = y_isl + 0.5 * DeltaS_Sl * np.sin(Theta_Sl)  # Define latest separation vortex control point location
 
-    # unit TEV strength computation
-    gamma_T = (gamma - gammal) * l / DeltaS_T - gamma * DeltaS_Sl
+# unit TEV strength computation
+gamma_T = (gamma - gammal) * l / DeltaS_T - gamma * DeltaS_Sl
 
-    # Unit LSV strength computation
-    gamma_Sl = gamma
+# Unit LSV strength computation
+gamma_Sl = gamma
 
-    # Geometric integrals for SPM and VPM (normal [I,K] and tangential [J,L])
-    I, J = IJ_SPM(XC, YC, XB, YB, phi, S)
-    K, L = KL_VPM(XC, YC, XB, YB, phi, S)
+# Geometric integrals for SPM and VPM (normal [I,K] and tangential [J,L])
+I, J = IJ_SPM(XC, YC, XB, YB, phi, S)
+K, L = KL_VPM(XC, YC, XB, YB, phi, S)
+Wihn = WihnF(XC, YC, XW, YW, delta_i, M)
+Tin, Tit = Tit_Tin(XC, YC, xT, yT, phi, DeltaS_T, Theta_T)
+Ain, Ait = Ait_Ain(XC, YC, x_isl, y_isl, phi, DeltaS_Sl, Theta_Sl)
+Diqn = DiqnF(XC, YC, XS, YS, delta_i, Q)
+# Compute normal velocity of airfoil panels
+for i in range(numPan):
+    ABM[i] = 2 * np.pi * (Vs_x[i] * np.cos(delta_i[i]) + Vs_y[i] * np.sin(delta_i[i]))  # Compute AM term of BC.eq.
 
-    # Compute normal velocity of airfoil panels
-    for i in range(numPan):
-        ABM = 2 * np.pi * (Vs_x[i] * np.cos(delta_i[i]) + Vs_y[i] * np.sin(delta_i[i]))  # Compute AM term of BC.eq.
+for i in range(numPan):
+    for j in range(numPan):
+        if (i == j):
+            BBM[i, j] = np.pi
+        else:
+            BBM[i, j] = I[i, j]  # Compute BM term of BC.eq.
 
-    for i in range(numPan):
-        for j in range(numPan):
-            if (i == j):
-                BBM[i, j] = np.pi
-            else:
-                BBM[i, j] = I[i, j]  # Compute BM term of BC.eq.
+for i in range(numPan):
+    for j in range(numPan):
+        if (i == j):
+            CBM[i, j] = 0
+        else:
+            CBM[i, j] = K[i, j]  # Compute CM term of BC.eq.
 
-    for i in range(numPan):
-        for j in range(numPan):
-            if (i == j):
-                CBM[i, j] = 0
-            else:
-                CBM[i, j] = K[i, j]  # Compute CM term of BC.eq.
+DBM = np.dot(Wihn, Gamma_wh)  # Compute DM term of BC
 
+# Compute EM term of BC
+EBM = Tin * gamma_T
 
-    Wihn = Wihn(XC, YC, XW, YW, delta_i, M)
+# Compute FM term of BC
+FBM = Ain * gamma_Sl
+#
+# Compute GM term of BC
+GBM = np.dot(Diqn, Gamma_Sq)  # Compute DM term of BC
+BBM_inv = np.linalg.inv(BBM)
+lamb = BBM_inv * (
+        -CBM * gamma - ABM - DBM - EBM - FBM - GBM)  # Obtain source strength in terms of unit vortex strength
 
-    DBM = np.dot(Wihn, Gamma_wh)  # Compute DM term of BC
+# Compute tangent velocity of airfoil panel
+for i in range(numPan):
+    ACM[i] = 2 * np.pi * (Vs_x[i] * tau_x[i] + Vs_y[i] * tau_y[i])
 
-    # Compute EM term of BC
-    Tin, Tit = Tit_Tin(XC, YC, xT, yT, phi, DeltaS_T, Theta_T)
-    Ain, Ait = Ait_Ain(XC, YC, x_isl, y_isl, phi, DeltaS_Sl, Theta_Sl)
-    EBM = Tin * gamma_T / (2 * np.pi)
+# BCM = np.dot(J, lamb)   # Compute B term of tangent velocity to calculate KC
+for i in range(numPan):
+    CCM[i] = - sum(L[i]) * gamma   # Compute C term of tangent velocity to calculate KC
 
-    # Compute FM term of BC
-    FBM = Ain * gamma_Sl / (2 * np.pi)
+DCM = np.dot(Wiht, Gamma_wh)  # Compute D term of tangent velocity to calculate KC
+ECM = Tit * gamma_T  # Compute E term of tangent velocity to calculate KC
+FCM = np.dot(Ait, gamma_Sl)  # Compute F term of tangent velocity to calculate KC
+GCM = np.dot(Diqt, Gamma_Sq)  # Compute G term of tangent velocity to calculate KC
+for i in range(numPan):
+    HCM[i] = gamma / 2
+V_it = ACM + BCM + CCM + DCM + ECM + FCM + GCM + HCM  # Compute the tangent velocity of airfoil panel
 
-    # Compute GM term of BC
-    Diqn = Diqn(XC, YC, XS, YS, delta_i, Q)
-
-    GBM = np.dot(Diqn, Gamma_Sq)  # Compute DM term of BC
-
-    BBM_inv = np.linalg.inv(BBM)
-    lamb = BBM_inv * (
-                -CBM * gamma - ABM - DBM - EBM - FBM - GBM)  # Obtain source strength in terms of unit vortex strength
-    # V_it = V_it(XC, Vs_x, tau_x, Vs_y, tau_y, J, lamb, gamma, L, Tit, DCM, gamma_T, Wiht, M, Ait, Gamma_wh, gamma_Sl, Q,
-    #             Diqt, Gamma_Sq)  # Compute the 1th to the Nth panel tangent velocity
-    #
-    # Kutta = sym.Eq(V_it[numPan - 1] ** 2 - V_it[0] ** 2, 2 * l * (gamma - gammal) / time_step)
-    # solution = sym.solve([V_itc[0], V_itc[numPan - 1], Kutta],
-    #                      (V_it[0], V_it[numPan - 1], gamma))  # solve the gamma value
-    # gammal = gamma
-    # lamb = BBM_inv * (-CBM * gamma - ABM - DBM - EBM - FBM - GBM)  # Recall source strength
-    # V_it = V_it(XB, Vs_x, tau_x, Vs_y, tau_y, J, lamb, gamma, L, Tit, DCM, gamma_T, Wiht, M, Ait, Gamma_wh, gamma_Sl, Q,
-    #             Diqt,
-    #             Gamma_Sq)  # Recall tangent velocity
-    #
-    # # update latest separation vortex (LSV) and TEV location
-    # MSljx, MSljy = MSljxMSljy(xSl, ySl, XB, YB, phi, S)
-    # NSljx, NSljy = NSljxNSljy(xSl, ySl, XB, YB, phi, S)
-    # DSlhx, DSlhy = DSlhxDSlhy(xSl, ySl, XW, YW, M)
-    # DSlqx, DSlqy = DSlqxDSlqy(xSl, ySl, XS, YS, M)
-    # TSlx, TSly = TSlxTSly(xSl, ySl, xT, yT, Theta_T, DeltaS_T)
-    # V_Slx, V_Sly = V_SlxV_Sly(XC, lamb, MSljx, MSljy, NSljx, NSljy, gamma_T, Q, M, DSlhx, DSlhy, DSlqx, DSlqy, Gamma_Sq,
-    #                           Gamma_wh, AoAR, Vinf, TSly, TSlx, gamma)
-    # MTjx, MTjy = MTjxMTjy(xT, yT, XB, YB, phi, S)
-    # NTjx, NTjy = NTjxNTjy(xT, yT, XB, YB, phi, S)
-    # DThx, DThy = DThxDThy(xT, yT, XW, YW, M)
-    # DTqx, DTqy = DTqxDTqy(xT, yT, XS, YS, M)
-    # ATx, ATy = ATxATy(xSl, ySl, xT, yT, Theta_Sl, DeltaS_Sl)
-    # V_Tx, V_Ty = V_SlxV_Sly(XC, lamb, MTjx, MTjy, NTjx, NTjy, gamma, Q, M, DThx, DThy, DTqx, DTqy, Gamma_Sq,
-    #                         Gamma_wh, AoAR, Vinf, ATy, ATx)
-    # Theta_Sl = math.atan2(V_Sly, V_Slx)
-    # DeltaS_Sl = math.sqrt(V_Slx ** 2 + V_Sly ** 2) * time_step
-    #
-    # # update separate vortex location and Strength
-    # XS.append(xSl + V_Slx * time_step)
-    # YS.append(ySl + V_Sly * time_step)
-    # Q += Q
-    # Gamma_Sq.append(gamma * DeltaS_Sl)
-    # MSjx, MSjy = MSjxMSjy(XS, YS, XB, YB, phi, S, Q)
-    # NSjx, NSjy = NSjxNSjy(XS, YS, XB, YB, phi, S, M)
-    # DShx, DShy = DShxDShy(XS, YS, XW, YW, M, Q)
-    # DScx, DScy = DScxDScy(XS, YS, Q)
-    # ASx, ASy = ASxASy(xSl, ySl, XS, YS, Theta_Sl, DeltaS_Sl, Q)
-    # TSx, TSy = TSxTSy(XS, YS, xT, yT, Theta_T, DeltaS_T, Q)
-    # VSqx, VSqy = VSqxVSqy(lamb, MSjx, MSjy, NSjx, NSjy, gamma, Q, DShx, DShy, DScx, DScy, Gamma_Sq,
-    #                       Gamma_wh, AoAR, Vinf, ASy, ASx, gamma_Sl, gamma_T, TSx, TSy)
-    # for q in range(Q):
-    #     XS[q] = XS[q] + VSqx[q] * time_step
-    #     YS[q] = YS[q] + VSqy[q] * time_step  # Separate vortex location update
-    #
-    # # update Wake vortex location and Strength
-    # XW.append(xT + V_Tx * time_step)
-    # YW.append(yT + V_Ty * time_step)
-    # M += M
-    # Gamma_wh.append(gamma_T * DeltaS_T)
-    # MWjx, MWjy = MWjxMWjy(XW, YW, XB, YB, phi, S)
-    # NWjx, NWjy = NWjxNWjy(XW, YW, XB, YB, phi, S)
-    # DWmx, DWmy = DWmxDWmy(XW, YW, M)
-    # DWqx, DWqy = DWqxDWqy(XS, YS, XW, YW, M, Q)
-    # AWx, AWy = AWxAWy(xSl, ySl, XW, YW, Theta_Sl, DeltaS_Sl, M)
-    # TWx, TWy = TWxTWy(XW, YW, xT, yT, Theta_T, DeltaS_T, M)
-    # VWhx, VWhy = VSqxVSqy(lamb, MWjx, MWjy, NWjx, NWjy, gamma, M, DWqx, DWqy, DWmx, DWmy, Gamma_Sq,
-    #                       Gamma_wh, AoAR, Vinf, AWy, AWx, gamma_Sl, gamma_T, TWx, TWy)
-    # for h in range(M):
-    #     XW[h] = XW[h] + VWhx * time_step
-    #     YW[h] = YW[h] + VWhy * time_step  # update wake vortex location
-    #
-    # # Compute all airfoil panels potential
-    #
-    # for f in range(1, numPlee + 1):
-    #     XBP[f] = (XBP[f - 1] - 10) / numPlee  # Obtain all boundary points of extending panels
-    #
-    # for f in range(1, numPlee + 1):
-    #     XCP[f] = (XBP[f] + XBP[f - 1]) / 2  # Obtain all control points of extending panels
-    #
-    # Mleejx = MleejxMleejy(XCP, YCP, XB, YB, phi, S, numPlee)
-    # Nleejx = NleejxNleejy(XCP, YCP, XB, YB, phi, S, numPlee)
-    # Dleehx = DleehxDleehy(XW, YW, XCP, YCP, numPlee, M)
-    # Dleeqx = DleeqxDleeqy(XS, YS, XCP, YCP, numPlee, Q)
-    # Aleex = AleexAleey(xSl, ySl, XCP, YCP, Theta_Sl, DeltaS_Sl, numPlee)
-    # Tleex = TleexTleey(XCP, YCP, xT, yT, Theta_T, DeltaS_T, numPlee)
-    # Vleex = Vleex(lamb, Mleejx, Nleejx, gamma, numPlee, Dleehx, Gamma_Sq, Dleeqx,
-    #               Gamma_wh, Vinf, Aleex, gamma_Sl, gamma_T, Tleex)  # Compute all the LE extending panels velocity
-    # lePhi = sum(Vleex * 10)  # Compute LE potential
-    # Phi = PotentialC(ile, V_it, S, lePhi, XC)  # Control points Potential
-    # # Compute pressure coefficient of airfoil
-    # for i in range(numPan):
-    #     Cp[k, i] = 1 - (V_it / Vinf) ** 2 - (Phi[i] - Phil[i]) / time_step  # unsteady Bernolli's law
-    #     Phil = Phi[i]
-    # # Compute lift, drag and moment coefficients
-    # CL[k] = sum(-Cp * S * np.sin(beta))  # Lift force coefficient []
-    # # CD = sum(-Cp * S * np.cos(beta))  # Drag force coefficient []
-    # CM[k] = sum(Cp * (XC - 0.25 * np.cos(AoAR)) * S * np.cos(phi))  # Moment coefficient []
-    print(lamb)
-# print(CL)
-# print(CM)
-
-
-
-
-
-
-
-
-
-
-
-
-
+print(v_it)
