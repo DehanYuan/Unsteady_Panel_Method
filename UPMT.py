@@ -285,4 +285,4 @@ for i in range(numPan):
     HCM[i] = gamma / 2
 V_it = ACM + BCM + CCM + DCM + ECM + FCM + GCM + HCM  # Compute the tangent velocity of airfoil panel
 
-print(v_it)
+print(V_it)
