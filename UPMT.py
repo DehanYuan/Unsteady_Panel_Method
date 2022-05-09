@@ -267,7 +267,7 @@ FBM = Ain * gamma_Sl
 GBM = np.dot(Diqn, Gamma_Sq)  # Compute DM term of BC
 BBM_inv = np.linalg.inv(BBM)
 lamb = BBM_inv * (
-        -CBM * gamma - ABM - DBM - EBM - FBM - GBM)  # Obtain source strength in terms of unit vortex strength
+        + CBM * gamma - ABM - DBM - EBM - FBM - GBM)  # Obtain source strength in terms of unit vortex strength
 
 # Compute tangent velocity of airfoil panel
 for i in range(numPan):
