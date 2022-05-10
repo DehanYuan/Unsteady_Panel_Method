@@ -5,17 +5,17 @@ import math as math
 np.seterr('raise')
 
 
-def AWxAWy(xSl, ySl, XW, YW, Theta_Sl, DeltaS_Sl, M):
+def AWxAWy(x_isl, y_isl, XW, YW, Theta_Sl, DeltaS_Sl, M):
     AWx = np.zeros(M)
     AWy = np.zeros(M)
     for h in range(M):
         # Compute intermediate values
-        A = -(XW[h] - xSl) * np.cos(Theta_Sl) - (YW[h] - ySl) * np.sin(Theta_Sl)  # A term
-        B = (XW[h] - xSl) ** 2 + (YW - ySl) ** 2  # B term
+        A = -(XW[h] - x_isl) * np.cos(Theta_Sl) - (YW[h] - y_isl) * np.sin(Theta_Sl)  # A term
+        B = (XW[h] - x_isl) ** 2 + (YW - y_isl) ** 2  # B term
         Cx = np.sin(Theta_Sl)  # Cx term (X-direction)
-        Dx = -(YW[h] - ySl)  # Dx term (X-direction)
+        Dx = -(YW[h] - y_isl)  # Dx term (X-direction)
         Cy = -np.cos(Theta_Sl)  # Cy term (Y-direction)
-        Dy = XW[h] - xSl  # Dy term (Y-direction)
+        Dy = XW[h] - x_isl  # Dy term (Y-direction)
         E = math.sqrt(B - A ** 2)  # E term
 
         if (E == 0 or np.iscomplex(E) or np.isnan(E) or np.isinf(E)):  # If E term is 0 or complex or a NAN or an INF
