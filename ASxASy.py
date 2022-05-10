@@ -5,17 +5,17 @@ import math as math
 np.seterr('raise')
 
 
-def ASxASy(xSl, ySl, XS, YS, Theta_Sl, DeltaS_Sl, Q):
+def ASxASy(x_isl, y_isl, XS, YS, Theta_Sl, DeltaS_Sl, Q):
     ASx = np.zeros(Q)
     ASy = np.zeros(Q)
     for q in range(Q):
         # Compute intermediate values
-        A = -(XS[q] - xSl) * np.cos(Theta_Sl) - (YS[q] - ySl) * np.sin(Theta_Sl)  # A term
-        B = (XS[q] - xSl) ** 2 + (YS[q] - ySl) ** 2  # B term
+        A = -(XS[q] - x_isl) * np.cos(Theta_Sl) - (YS[q] - y_isl) * np.sin(Theta_Sl)  # A term
+        B = (XS[q] - x_isl) ** 2 + (YS[q] - y_isl) ** 2  # B term
         Cx = np.sin(Theta_Sl)  # Cx term (X-direction)
-        Dx = -(YS[q] - ySl)  # Dx term (X-direction)
+        Dx = -(YS[q] - y_isl)  # Dx term (X-direction)
         Cy = -np.cos(Theta_Sl)  # Cy term (Y-direction)
-        Dy = XS[q] - xSl  # Dy term (Y-direction)
+        Dy = XS[q] - x_isl  # Dy term (Y-direction)
         E = math.sqrt(B - A ** 2)  # E term
 
         if (E == 0 or np.iscomplex(E) or np.isnan(E) or np.isinf(E)):
