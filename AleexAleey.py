@@ -5,16 +5,16 @@ import math as math
 np.seterr('raise')
 
 
-def AleexAleey(xSl, ySl, XCP, YCP, Theta_Sl, DeltaS_Sl, numPlee):
+def AleexAleey(x_isl, y_isl, XCP, YCP, Theta_Sl, DeltaS_Sl, numPlee):
     Aleex = np.zeros(numPlee)
     Aleey = np.zeros(numPlee)
     for f in range(1, numPlee+1):
-        A = -(XCP[f] - xSl) * np.cos(Theta_Sl) - (YCP[f] - ySl) * np.sin(Theta_Sl)  # A term
-        B = (XCP[f] - xSl) ** 2 + (YCP[f] - ySl) ** 2  # B term
+        A = -(XCP[f] - x_isl) * np.cos(Theta_Sl) - (YCP[f] - y_isl) * np.sin(Theta_Sl)  # A term
+        B = (XCP[f] - x_isl) ** 2 + (YCP[f] - y_isl) ** 2  # B term
         Cx = np.sin(Theta_Sl)  # Cx term (X-direction)
-        Dx = -(YCP[f] - ySl)  # Dx term (X-direction)
+        Dx = -(YCP[f] - y_isl)  # Dx term (X-direction)
         Cy = -np.cos(Theta_Sl)  # Cy term (Y-direction)
-        Dy = XCP[f] - xSl  # Dy term (Y-direction)
+        Dy = XCP[f] - x_isl  # Dy term (Y-direction)
         E = math.sqrt(B - A ** 2)  # E term
 
         if (E == 0 or np.iscomplex(E) or np.isnan(E) or np.isinf(E)):
