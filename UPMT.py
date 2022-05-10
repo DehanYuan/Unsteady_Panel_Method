@@ -286,6 +286,6 @@ GCM = np.dot(Diqt, Gamma_Sq)  # Compute G term of tangent velocity to calculate 
 for i in range(numPan):
     HCM[i] = 0.5
 HCM = HCM * gamma
-V_it = ACM + BCM + CCM + DCM + ECM + FCM + GCM + HCM  # Compute the tangent velocity of airfoil panel
+V_it = ACM - BCM + CCM + DCM - ECM - FCM + GCM + HCM  # Compute the tangent velocity of airfoil panel
 
 print(V_it)
