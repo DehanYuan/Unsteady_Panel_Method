@@ -5,17 +5,17 @@ import math as math
 np.seterr('raise')
 
 
-def TWxTWy(XW, YW, xT, yT, Theta_T, DeltaS_T, M):
+def TWxTWy(XW, YW, xTB, yTB, Theta_T, DeltaS_T, M):
     TWx = np.zeros(M)
     TWy = np.zeros(M)
     for h in range(M):
         # Compute intermediate values
-        A = -(XW[h] - xT) * np.cos(Theta_T) - (YW[h] - yT) * np.sin(Theta_T)  # A term
-        B = (XW[h] - xT) ** 2 + (YW[h] - yT) ** 2  # B term
+        A = -(XW[h] - xTB) * np.cos(Theta_T) - (YW[h] - yTB) * np.sin(Theta_T)  # A term
+        B = (XW[h] - xTB) ** 2 + (YW[h] - yTB) ** 2  # B term
         Cx = np.sin(Theta_T)  # Cx term (X-direction)
-        Dx = -(YW[h] - yT)  # Dx term (X-direction)
+        Dx = -(YW[h] - yTB)  # Dx term (X-direction)
         Cy = -np.cos(Theta_T)  # Cy term (Y-direction)
-        Dy = XW[h] - xT  # Dy term (Y-direction)
+        Dy = XW[h] - xTB  # Dy term (Y-direction)
         E = math.sqrt(B - A ** 2)  # E term
         if (E == 0 or np.iscomplex(E) or np.isnan(E) or np.isinf(E)):  # If E term is 0 or complex or a NAN or an INF
             TWx[h] = 0
