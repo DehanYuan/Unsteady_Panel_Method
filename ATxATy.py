@@ -5,18 +5,15 @@ import math as math
 np.seterr('raise')
 
 
-def ATxATy(xSl, ySl, xT, yT, Theta_Sl, DeltaS_Sl):
-    # Number of panels
-
-
+def ATxATy(x_isl, y_isl, xTB, yTB, Theta_Sl, DeltaS_Sl):
 
         # Compute intermediate values
-    A = -(xT - xSl) * np.cos(Theta_Sl) - (yT - ySl) * np.sin(Theta_Sl)  # A term
-    B = (xT - xSl) ** 2 + (yT - ySl) ** 2  # B term
+    A = -(xTB - x_isl) * np.cos(Theta_Sl) - (yTB - y_isl) * np.sin(Theta_Sl)  # A term
+    B = (xTB - x_isl) ** 2 + (yTB - y_isl) ** 2  # B term
     Cx = np.sin(Theta_Sl)  # Cx term (X-direction)
-    Dx = -(yT - ySl)  # Dx term (X-direction)
+    Dx = -(yTB - y_isl)  # Dx term (X-direction)
     Cy = -np.cos(Theta_Sl)  # Cy term (Y-direction)
-    Dy = xT - xSl  # Dy term (Y-direction)
+    Dy = xTB - x_isl  # Dy term (Y-direction)
     E = math.sqrt(B - A ** 2)  # E term
 
     if (E == 0 or np.iscomplex(E) or np.isnan(E) or np.isinf(E)):  # If E term is 0 or complex or a NAN or an INF
