@@ -5,17 +5,17 @@ import math as math
 np.seterr('raise')
 
 
-def TleexTleey(XCP, YCP, xT, yT, Theta_T, DeltaS_T, numPlee):
+def TleexTleey(XCP, YCP, xTB, yTB, Theta_T, DeltaS_T, numPlee):
     Tleex = np.zeros(numPlee)
     Tleey = np.zeros(numPlee)
     for f in range(1, numPlee+1):
         # Compute intermediate values
-        A = -(XCP[f] - xT) * np.cos(Theta_T) - (YCP[f] - yT) * np.sin(Theta_T)  # A term
-        B = (XCP[f] - xT) ** 2 + (YCP[f] - yT) ** 2  # B term
+        A = -(XCP[f] - xTB) * np.cos(Theta_T) - (YCP[f] - yTB) * np.sin(Theta_T)  # A term
+        B = (XCP[f] - xTB) ** 2 + (YCP[f] - yTB) ** 2  # B term
         Cx = np.sin(Theta_T)  # Cx term (X-direction)
-        Dx = -(YCP[f] - yT)  # Dx term (X-direction)
+        Dx = -(YCP[f] - yTB)  # Dx term (X-direction)
         Cy = -np.cos(Theta_T)  # Cy term (Y-direction)
-        Dy = XCP[f] - xT  # Dy term (Y-direction)
+        Dy = XCP[f] - xTB  # Dy term (Y-direction)
         E = math.sqrt(B - A ** 2)  # E term
 
         if (E == 0 or np.iscomplex(E) or np.isnan(E) or np.isinf(E)):  # If E term is 0 or complex or a NAN or an INF
