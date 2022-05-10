@@ -220,6 +220,8 @@ for i in range(numPan):
 
 xT = XB[0] + 0.5 * DeltaS_T * np.cos(Theta_T)
 yT = YB[0] + 0.5 * DeltaS_T * np.sin(Theta_T)  # Compute Trailing edge vortex location
+xTB = XB[0] + DeltaS_T * np.cos(Theta_T)
+yTB = YB[0] + DeltaS_T * np.sin(Theta_T)  # Compute Trailing edge vortex boundary point location
 
 xSl = x_isl + 0.5 * DeltaS_Sl * np.cos(Theta_Sl)
 ySl = y_isl + 0.5 * DeltaS_Sl * np.sin(Theta_Sl)  # Define latest separation vortex control point location
@@ -267,22 +269,23 @@ FBM = Ain * gamma_Sl
 GBM = np.dot(Diqn, Gamma_Sq)  # Compute DM term of BC
 BBM_inv = np.linalg.inv(BBM)
 lamb = BBM_inv * (
-        + CBM * gamma - ABM - DBM - EBM - FBM - GBM)  # Obtain source strength in terms of unit vortex strength
+        -CBM * gamma - ABM - DBM + EBM + FBM - GBM)  # Obtain source strength in terms of unit vortex strength
 
 # Compute tangent velocity of airfoil panel
 for i in range(numPan):
     ACM[i] = 2 * np.pi * (Vs_x[i] * tau_x[i] + Vs_y[i] * tau_y[i])
 
-# BCM = np.dot(J, lamb)   # Compute B term of tangent velocity to calculate KC
+BCM = np.dot(J, lamb)   # Compute B term of tangent velocity to calculate KC
 for i in range(numPan):
-    CCM[i] = - sum(L[i]) * gamma   # Compute C term of tangent velocity to calculate KC
-
+    CCM[i] = - sum(L[i])    # Compute C term of tangent velocity to calculate KC
+CCM = CCM * gamma
 DCM = np.dot(Wiht, Gamma_wh)  # Compute D term of tangent velocity to calculate KC
 ECM = Tit * gamma_T  # Compute E term of tangent velocity to calculate KC
 FCM = np.dot(Ait, gamma_Sl)  # Compute F term of tangent velocity to calculate KC
 GCM = np.dot(Diqt, Gamma_Sq)  # Compute G term of tangent velocity to calculate KC
 for i in range(numPan):
-    HCM[i] = gamma / 2
+    HCM[i] = 0.5
+HCM = HCM * gamma
 V_it = ACM + BCM + CCM + DCM + ECM + FCM + GCM + HCM  # Compute the tangent velocity of airfoil panel
 
 print(V_it)
